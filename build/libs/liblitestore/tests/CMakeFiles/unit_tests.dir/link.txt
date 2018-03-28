@@ -1,0 +1,1 @@
+/usr/bin/c++    -rdynamic CMakeFiles/unit_tests.dir/main.cpp.o CMakeFiles/unit_tests.dir/litestore_helpers_test.cpp.o CMakeFiles/unit_tests.dir/litestore_test.cpp.o  -o unit_tests -Wl,-rpath,/home/markku/repos/liblitestorecpp/build/libs/liblitestore ../libgtest.a -lpthread ../liblitestore.so ../libs/sqlite-amalgamation-3220000/libsqlite3.a -ldl 

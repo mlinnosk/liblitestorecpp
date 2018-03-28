@@ -1,0 +1,1 @@
+/usr/bin/cc -fPIC   -shared -Wl,-soname,liblitestore.so -o liblitestore.so CMakeFiles/litestore.dir/src/litestore.c.o libs/sqlite-amalgamation-3220000/libsqlite3.a 

@@ -1,0 +1,3 @@
+[submodule "libs/liblitestore"]
+	path = libs/liblitestore
+	url = https://github.com/mlinnosk/liblitestore.git
