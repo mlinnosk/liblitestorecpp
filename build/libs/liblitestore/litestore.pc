@@ -1,9 +1,0 @@
-Name: litestore
-Description: 
-Version: 0.1.0
-Requires: 
-prefix=/usr/local
-includedir=
-libdir=
-Libs: 
-Cflags: 
