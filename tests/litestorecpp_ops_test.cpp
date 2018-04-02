@@ -1,3 +1,4 @@
+#include <cstddef>
 #include <type_traits>
 
 #include "catch.hpp"
@@ -13,7 +14,7 @@ TEST_CASE("Operations throw if not opened")
 
     SECTION("create null")
     {
-        CHECK_THROWS_AS(ls.create("key"), std::runtime_error);
+        CHECK_THROWS_AS(ls.create("key", nullptr), std::runtime_error);
     }
     SECTION("create blob")
     {
@@ -21,7 +22,7 @@ TEST_CASE("Operations throw if not opened")
     }
     SECTION("read null")
     {
-        CHECK_THROWS_AS(ls.read("key"), std::runtime_error);
+        CHECK_THROWS_AS(ls.read<std::nullptr_t>("key"), std::runtime_error);
     }
     SECTION("read blob")
     {
@@ -29,7 +30,7 @@ TEST_CASE("Operations throw if not opened")
     }
     SECTION("update null")
     {
-        CHECK_THROWS_AS(ls.update("key"), std::runtime_error);
+        CHECK_THROWS_AS(ls.update("key", nullptr), std::runtime_error);
     }
     SECTION("update blob")
     {
@@ -44,27 +45,27 @@ TEST_CASE("CRUD on null type")
 
     SECTION("Read throws if not found")
     {
-        const bool rv = ls.read("null"); 
-        CHECK_FALSE(rv);
+        CHECK_THROWS_AS(ls.read<std::nullptr_t>("null"), std::runtime_error);
     }
 
     SECTION("create and then read")
     {
-        ls.create("null");
-        const bool rv = ls.read("null");
+        ls.create("null", nullptr);
+   
+        const auto rv = ls.read<std::nullptr_t>("null");
     
-        CHECK(rv);
+        CHECK(rv == nullptr);
     }
 
     SECTION("Update null on empty")
     {
-        ls.update("null");
-        const bool rv1 = ls.read("null");
-        CHECK(rv1);
+        ls.update("null", nullptr);
+        const auto rv1 = ls.read<std::nullptr_t>("null");
+        CHECK(rv1 == nullptr);
         
-        ls.update("null");
-        const bool rv2 = ls.read("null");
-        CHECK(rv2);
+        ls.update("null", nullptr);
+        const auto rv2 = ls.read<std::nullptr_t>("null");
+        CHECK(rv2 == nullptr);
     }
 }
 

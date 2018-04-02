@@ -84,31 +84,6 @@ void Litestore::close() noexcept
 }
 
 /** CRUD API */
-void Litestore::create(const std::string& key)
-{
-    throwIfClosed(*this);
-
-    throwOnError(
-        litestore_create_null(m_litestore.get(), slice(key))
-    );
-}
-
-bool Litestore::read(const std::string& key)
-{
-    throwIfClosed(*this);
-
-    return litestore_read_null(m_litestore.get(), slice(key)) == LITESTORE_OK;
-}
-
-void Litestore::update(const std::string& key)
-{
-    throwIfClosed(*this);
-
-    throwOnError(
-        litestore_update_null(m_litestore.get(), slice(key))
-    );
-}
-
 void Litestore::del(const std::string& key)
 {
     throwIfClosed(*this);
@@ -122,29 +97,55 @@ void Litestore::createImpl(const std::string& key, litestore_blob_t blobIn)
 {
     throwIfClosed(*this);
 
-    throwOnError(
-        litestore_create(m_litestore.get(), slice(key), blobIn)
-    );
+    if (!blobIn.data)
+    {
+        throwOnError(
+            litestore_create_null(m_litestore.get(), slice(key))
+        );
+    }
+    else
+    {
+        throwOnError(
+            litestore_create(m_litestore.get(), slice(key), blobIn)
+        );
+    }
 }
 
 void Litestore::readImpl(const std::string& key, void* blobOut)
 {
     throwIfClosed(*this);
  
-    throwOnError(
-        litestore_read(m_litestore.get(), slice(key), &read_cb, blobOut)
-    );
+    if (!blobOut)
+    {
+        throwOnError(
+            litestore_read_null(m_litestore.get(), slice(key))
+        );
+    }
+    else
+    {
+        throwOnError(
+            litestore_read(m_litestore.get(), slice(key), &read_cb, blobOut)
+        );
+    }
 }
 
 void Litestore::updateImpl(const std::string& key, litestore_blob_t blobIn)
 {
     throwIfClosed(*this);
 
-    throwOnError(
-        litestore_update(m_litestore.get(), slice(key), blobIn)
-    );
+    if (!blobIn.data)
+    {
+        throwOnError(
+            litestore_update_null(m_litestore.get(), slice(key))
+        );
+    }
+    else
+    {
+        throwOnError(
+            litestore_update(m_litestore.get(), slice(key), blobIn)
+        );
+    }
 }
-
 
 
 namespace detail

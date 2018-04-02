@@ -5,6 +5,7 @@
  */
 #pragma once
 
+#include <cstddef>
 #include <functional>
 #include <memory>
 #include <string>
@@ -63,12 +64,6 @@ public:
 
     /** CRUD API */
     /**
-     * Create a null type with key.
-     * 
-     * @param key The key.
-     */
-    void create(const std::string& key);
-    /**
      * Create a blob with key.
      * The template type T must have valid specialization for 
      * BlobInput class.
@@ -80,14 +75,6 @@ public:
     template <typename T>
     void create(const std::string& key, const T& value);
     /**
-     * Read a null type with key.
-     * 
-     * @param key The key.
-     * @return True if the null object with key exists false if not.
-     * @throws std::runtime_error if no handle.
-     */
-    bool read(const std::string& key);
-    /**
      * Read a blob of type T with key.
      * The template type T must have valid specialization for 
      * BlobOutput class.
@@ -98,14 +85,6 @@ public:
      */
     template <typename T>
     T read(const std::string& key);
-    /**
-     * Update existing value to null type.
-     * If key does not exist, it is created.
-     *
-     * @param key The key.
-     * @throws std::runtime_error if operation fails.
-     */
-    void update(const std::string& key);
     /**
      * Update existing value to a blob.
      * If key does not exist, it is created.
@@ -168,6 +147,26 @@ struct BlobOutput
     void* data()
     {
         return &value;
+    }
+};
+// Specialization for nullptr_t
+template <>
+struct BlobInput<std::nullptr_t>
+{
+
+    BlobInput(const std::nullptr_t&) {};
+    litestore_blob_t blob()
+    {
+        return litestore_make_blob(nullptr, 0);
+    }
+};
+template <>
+struct BlobOutput<std::nullptr_t>
+{
+    BlobOutput(std::nullptr_t&) {};
+    void* data()
+    {
+        return nullptr;
     }
 };
 
