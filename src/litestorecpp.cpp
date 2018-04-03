@@ -97,36 +97,25 @@ void Litestore::createImpl(const std::string& key, litestore_blob_t blobIn)
 {
     throwIfClosed(*this);
 
-    if (!blobIn.data)
-    {
-        throwOnError(
+    throwOnError(
+        !blobIn.data ?
             litestore_create_null(m_litestore.get(), slice(key))
-        );
-    }
-    else
-    {
-        throwOnError(
-            litestore_create(m_litestore.get(), slice(key), blobIn)
-        );
-    }
+            : litestore_create(m_litestore.get(), slice(key), blobIn)
+    );
 }
 
 void Litestore::readImpl(const std::string& key, void* blobOut)
 {
     throwIfClosed(*this);
  
-    if (!blobOut)
-    {
-        throwOnError(
+    throwOnError(
+        !blobOut ?
             litestore_read_null(m_litestore.get(), slice(key))
-        );
-    }
-    else
-    {
-        throwOnError(
-            litestore_read(m_litestore.get(), slice(key), &read_cb, blobOut)
-        );
-    }
+            : litestore_read(m_litestore.get(),
+                                slice(key),
+                                &read_cb,
+                                blobOut)
+    );
 }
 
 void Litestore::updateImpl(const std::string& key, litestore_blob_t blobIn)
