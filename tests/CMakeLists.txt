@@ -2,7 +2,8 @@
 set(TEST_SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/main.cpp
     ${CMAKE_CURRENT_LIST_DIR}/litestorecpp_test.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/litestorecpp_ops_test.cpp)
+    ${CMAKE_CURRENT_LIST_DIR}/litestorecpp_ops_test.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/litestorecpp_tx_test.cpp)
 add_executable(test_litestorecpp ${TEST_SOURCES})
 target_include_directories(test_litestorecpp
     PRIVATE ${CMAKE_CURRENT_LIST_DIR}

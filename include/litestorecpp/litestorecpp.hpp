@@ -27,6 +27,49 @@ using Handle = std::unique_ptr<::litestore, LSDelete>;
 }
 
 /**
+ * RAII class for transactions.
+ * 
+ * A Transaction can only be constructed via Litestore class.
+ * 
+ * If the transaction is not commited or rollbacked explicitely
+ * the destructor will ROLLBACK.
+ */
+class Transaction
+{
+    friend class Litestore;
+public:
+    enum class State { INITIAL, OPEN, DONE };
+    /**
+     * Destructor will rollback the transaction if it's not done.
+     */
+    ~Transaction() noexcept;
+    Transaction(Transaction&& rhs) noexcept;
+    Transaction(const Transaction&) = delete;
+    Transaction& operator=(const Transaction&) = delete;
+    Transaction& operator=(Transaction&&) = delete;
+    /**
+     * @return Current state of the transaction.
+     */
+    State state() const noexcept { return m_state; }
+    /**
+     * Commit the trasaction.
+     * @throws std::runtime_error On failure.
+     */
+    void commit();
+    /**
+     * Rollback the transaction.
+     * @throws std::runtime_error On failure.
+     */
+    void rollback();
+
+private:
+    Transaction(litestore* ls);
+
+    litestore* m_litestore = nullptr;
+    State m_state = State::INITIAL;
+};
+
+/**
  * The Litestore class is a RAII wrapper
  * for the Litestore C interface.
  * It provides the context management and
@@ -61,7 +104,10 @@ public:
      * Explicitely close the handle to Litestore.
      */
     void close() noexcept;
-
+    /**
+     * Create a transaction.
+     */
+    Transaction createTx();
     /** CRUD API */
     /**
      * Create a blob with key.
