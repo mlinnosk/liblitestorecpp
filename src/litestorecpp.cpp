@@ -150,7 +150,7 @@ void Litestore::close() noexcept
 
 Transaction Litestore::createTx()
 {
-    return Transaction(m_litestore.get());
+    return Transaction{m_litestore.get()};
 }
 
 /** CRUD API */
