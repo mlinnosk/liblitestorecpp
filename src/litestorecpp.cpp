@@ -135,7 +135,12 @@ void Transaction::rollback()
 
 
 Litestore::Litestore(const char* filename)
-    : m_litestore(createHandle(filename, { &error_trampoline, &m_errorFunc }))
+    : Litestore(filename, ErrorFunc{})
+{}
+
+Litestore::Litestore(const char* filename, ErrorFunc errFunc)
+    : m_errorFunc(std::move(errFunc)),
+      m_litestore(createHandle(filename, { &error_trampoline, &m_errorFunc }))
 {}
 
 bool Litestore::is_open() const noexcept

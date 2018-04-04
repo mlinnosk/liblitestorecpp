@@ -18,6 +18,22 @@ TEST_CASE("Constructor with path opens connection")
     REQUIRE(ls.is_open());
 }
 
+TEST_CASE("Constructor throws if can't open handle")
+{
+    // root should not be writable
+    bool exception = false;
+    try
+    {
+        Litestore ls("/");
+    }
+    catch (const std::runtime_error&)
+    {
+        exception = true;
+    }
+    
+    CHECK(exception);
+}
+
 TEST_CASE("Litestore is not copyable")
 {
     REQUIRE_FALSE(std::is_copy_constructible<Litestore>::value);

@@ -134,3 +134,15 @@ TEST_CASE("Delete")
         CHECK_THROWS_AS(ls.read<int>("key"), std::runtime_error);
     }
 }
+
+TEST_CASE("Error function is called")
+{
+    bool called = false;
+    Litestore ls{":memory:", [&](const int, const char*) { called = true; }};
+
+    ls.create("key", nullptr);
+    // creating a duplicate fails and calls the error func
+    CHECK_THROWS_AS(ls.create("key", nullptr), std::runtime_error);
+    
+    CHECK(called);
+}

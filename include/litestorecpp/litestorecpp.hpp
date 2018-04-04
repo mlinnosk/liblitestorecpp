@@ -87,7 +87,13 @@ public:
      * Opens a handle to given Litestore instance.
      * @param filename The Litestore filename.
      */
-    Litestore(const char* filename);
+    explicit Litestore(const char* filename);
+    /**
+     * Opens a handle to given Litestore instance.
+     * @param filename The Litestore filename.
+     * @param errFunc The error function that is called on errors.
+     */
+    Litestore(const char* filename, ErrorFunc errFunc);
     /**
      * Instance is non-copyable and non-assignable, but is movable.
      */
