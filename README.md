@@ -1,5 +1,5 @@
-# liblitestorecpp
-![Build status](https://travis-ci.org/mlinnosk/liblitestorecpp.svg?branch=master)
+# liblitestorecpp ![Build status}(https://travis-ci.org/mlinnosk/liblitestorecpp.svg?branch=master)
+
 C++ interface to [liblitestore](https://github.com/mlinnosk/liblitestore).
 
 Implements C++ style interface (with RAII semantics) for **liblitestore** KV store. The API is a bit simpler to use than the C API. For reading and writing 
