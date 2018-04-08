@@ -1,4 +1,4 @@
-# liblitestorecpp ![Build status}(https://travis-ci.org/mlinnosk/liblitestorecpp.svg?branch=master)
+# liblitestorecpp ![Build status](https://travis-ci.org/mlinnosk/liblitestorecpp.svg?branch=master)
 
 C++ interface to [liblitestore](https://github.com/mlinnosk/liblitestore).
 
