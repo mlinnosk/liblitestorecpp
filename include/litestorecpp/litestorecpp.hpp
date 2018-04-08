@@ -9,6 +9,7 @@
 #include <functional>
 #include <memory>
 #include <string>
+#include <vector>
 
 #include "litestore/litestore.h"
 
@@ -149,8 +150,19 @@ public:
      */
     template <typename T>
     void update(const std::string& key, const T& value);
-
+    /**
+     * Delete the given key.
+     *
+     * @param key The key.
+     * @throws std::runtime_error if operation fails.
+     */
     void del(const std::string& key);
+    /**
+     * Get a list of keys matching the given pattern.
+     *
+     * @return Vector of keys matched to pattern.
+     */
+    std::vector<std::string> keys(const std::string& pattern);
 
 private:
     void createImpl(const std::string& key, litestore_blob_t blobIn);

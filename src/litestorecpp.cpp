@@ -32,6 +32,25 @@ int read_cb(litestore_blob_t value, void* user_data)
     return LITESTORE_OK;
 }
 
+int read_keys_cb(litestore_slice_t key,
+                 int object_type,
+                 void* user_data)
+{
+    UNUSED(object_type);
+
+    try
+    {
+        std::vector<std::string>* v =
+            reinterpret_cast<std::vector<std::string>*>(user_data);
+        v->emplace_back(key.data, key.length);
+    
+        return LITESTORE_OK;
+    }
+    catch (...)
+    {}
+    return LITESTORE_ERR;
+}
+
 inline
 void throwOnError(const int rc)
 {
@@ -163,9 +182,27 @@ void Litestore::del(const std::string& key)
 {
     throwIfClosed(*this);
 
+    // can return UNKNOWN_ENTITY, not error
+    const auto rc = litestore_delete(m_litestore.get(), slice(key));
+    if (rc == LITESTORE_ERR)
+    {
+        throwOnError(rc);
+    }
+}
+
+std::vector<std::string> Litestore::keys(const std::string& pattern)
+{
+    throwIfClosed(*this);
+
+    std::vector<std::string> results;
     throwOnError(
-        litestore_delete(m_litestore.get(), slice(key))
+        litestore_read_keys(m_litestore.get(),
+                            slice(pattern),
+                            &read_keys_cb,
+                            &results)
     );
+
+    return results;
 }
 
 void Litestore::createImpl(const std::string& key, litestore_blob_t blobIn)

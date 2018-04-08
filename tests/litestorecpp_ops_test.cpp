@@ -124,6 +124,12 @@ TEST_CASE("Delete")
         CHECK_THROWS_AS(ls.del("key"), std::runtime_error);
     }
 
+    SECTION("Non existing does not throw")
+    {
+        Litestore ls(":memory:");
+        CHECK_NOTHROW(ls.del("key"));
+    }
+
     SECTION("Delete the data")
     {
         Litestore ls(":memory:");
@@ -145,4 +151,49 @@ TEST_CASE("Error function is called")
     CHECK_THROWS_AS(ls.create("key", nullptr), std::runtime_error);
     
     CHECK(called);
+}
+
+TEST_CASE("Reading keys")
+{
+    Litestore ls(":memory:");
+    
+    SECTION("No match produces empty list")
+    {
+        const auto keys = ls.keys("*");
+     
+        REQUIRE(keys.empty());    
+    }
+
+    SECTION("Get all returns every key")
+    {
+        auto tx = ls.createTx();
+        ls.create("key1", nullptr);
+        ls.create("key2", nullptr);
+        ls.create("key3", nullptr);
+
+        const auto keys = ls.keys("*");
+        tx.rollback();
+
+        REQUIRE(keys.size() == 3);
+        CHECK(keys[0] == "key1");
+        CHECK(keys[1] == "key2");
+        CHECK(keys[2] == "key3");
+    }
+
+    SECTION("Get with more specific pattern")
+    {
+        auto tx = ls.createTx();
+        ls.create("key1", nullptr);
+        ls.create("key2", nullptr);
+        ls.create("key3", nullptr);
+        ls.create("foo", nullptr);
+
+        const auto keys = ls.keys("key*");
+        tx.rollback();
+
+        REQUIRE(keys.size() == 3);
+        CHECK(keys[0] == "key1");
+        CHECK(keys[1] == "key2");
+        CHECK(keys[2] == "key3");
+    }
 }
